@@ -1,45 +1,46 @@
 import { NavLink } from 'react-router';
-import { Home, Brain, ShoppingCart, BarChart3 } from 'lucide-react';
+import { Home, Map as MapIcon, ShoppingBag, MessageCircle, LayoutGrid } from 'lucide-react';
 
 export function Navigation() {
   const navItems = [
-    { to: '/', icon: Home, label: 'Dalarim' },
-    { to: '/ai-tavsiyalar', icon: Brain, label: 'AI Tavsiya' },
-    { to: '/bozor', icon: ShoppingCart, label: 'Savdo' },
-    { to: '/analitika', icon: BarChart3, label: 'Statistika' },
+    { to: '/', icon: Home, label: 'Asosiy' },
+    { to: '/maydon', icon: MapIcon, label: 'Maydon' },
+    { to: '/agro-apteka', icon: ShoppingBag, label: 'Agro apteka' },
+    { to: '/rals', icon: MessageCircle, label: 'rAls' },
+    { to: '/boshqa', icon: LayoutGrid, label: 'Boshqa' },
   ];
 
   return (
     <>
-      {/* Top Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-            <span className="text-white text-xl font-bold">F</span>
-          </div>
-          <span className="text-xl font-bold text-gray-900">Ferdo</span>
-        </div>
-      </div>
-
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
-        <div className="flex justify-around items-center px-2 py-2">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-safe">
+        <div className="flex justify-between items-center px-4 py-3">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex flex-col items-center justify-center gap-1 py-2 px-4 rounded-lg transition-colors min-w-[70px] ${
-                  isActive
-                    ? 'text-green-600'
-                    : 'text-gray-600'
+                `flex items-center justify-center gap-2 py-2.5 px-3.5 rounded-full transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-green-100/60 text-green-700' 
+                    : 'text-gray-500 hover:bg-gray-50'
                 }`
               }
             >
-              <item.icon size={24} strokeWidth={2.5} />
-              <span className="text-xs font-medium">
-                {item.label}
-              </span>
+              {({ isActive }) => (
+                <>
+                  <item.icon 
+                    size={24} 
+                    strokeWidth={isActive ? 2.5 : 2} 
+                    className={isActive ? "text-green-700" : "text-gray-800"} 
+                  />
+                  {isActive && (
+                    <span className="text-sm font-semibold text-green-700 whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  )}
+                </>
+              )}
             </NavLink>
           ))}
         </div>
