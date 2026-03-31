@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 import { Dashboard } from './pages/Dashboard';
 import { Field } from './pages/Field';
-import { AgroApteka } from './pages/AgroApteka';
+import { Marketplace } from './pages/Marketplace'; // <-- Savdo sahifasi chaqirildi
 import { AIRecommendations } from './pages/AIRecommendations';
 import { Profile } from './pages/Profile';
 
@@ -15,11 +15,11 @@ export const router = createBrowserRouter([
     Component: Field, 
   },
   {
-    path: '/agro-apteka',
-    Component: AgroApteka, 
+    path: '/savdo', // <-- Yo'nalish o'zgardi
+    Component: Marketplace, 
   },
   {
-    path: '/ai-yordamchi', // Shu yer o'zgardi
+    path: '/ai-yordamchi',
     Component: AIRecommendations, 
   },
   {
