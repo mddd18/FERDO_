@@ -1,9 +1,13 @@
 export interface Sensor {
   id: string;
   name: string;
+  cropType: string;
   moisture: number; // %
   temperature: number; // °C
   conductivity: number; // µS/cm
+  phLevel: number; // 0-14 (Kislotalilik)
+  npk: { n: number; p: number; k: number }; // mg/kg (Azot, Fosfor, Kaliy)
+  battery: number; // %
   status: 'good' | 'warning' | 'danger';
   lastUpdated: string;
 }
@@ -11,119 +15,87 @@ export interface Sensor {
 export interface AIRecommendation {
   sensorId: string;
   issue: string;
-  recommendation: string;
+  urgency: 'high' | 'medium' | 'low';
+  diagnosis: string;
   cropSuggestion: string;
-  action: string;
+  actionSteps: string[];
+  expectedYieldImpact: string;
 }
 
 // ==========================================
-// 1. DATCHIKLAR VA MAYDON MA'LUMOTLARI
+// 1. PRO DATCHIKLAR VA MAYDON MA'LUMOTLARI
 // ==========================================
 export const sensors: Sensor[] = [
   {
     id: '24e124126f356220',
-    name: 'SMTC-1',
+    name: 'SMTC-1 (Shimoliy blok)',
+    cropType: "Intensiv Bug'doy",
     temperature: 16.2,
     moisture: 24.68,
     conductivity: 1057,
+    phLevel: 6.8, // Ideal
+    npk: { n: 45, p: 30, k: 120 },
+    battery: 88,
     status: 'good',
-    lastUpdated: '14:14:35',
-  },
-  {
-    id: '24e124126f356667',
-    name: 'SMTC-2',
-    temperature: 15.8,
-    moisture: 18.77,
-    conductivity: 1470,
-    status: 'warning',
-    lastUpdated: '14:14:28',
+    lastUpdated: 'Bugun, 14:15',
   },
   {
     id: '24e124126f350492',
-    name: 'SMTC-3',
+    name: 'SMTC-3 (Sho\'rxok hudud)',
+    cropType: "Makkajo'xori",
     temperature: 15.7,
     moisture: 34.37,
-    conductivity: 2991,
+    conductivity: 2991, // Juda yuqori
+    phLevel: 8.2, // Ishqoriy
+    npk: { n: 15, p: 10, k: 40 }, // Ozuqa yetishmaydi
+    battery: 42,
     status: 'danger',
-    lastUpdated: '14:14:25',
-  },
-  {
-    id: '24e124126f350564',
-    name: 'SMTC-4',
-    temperature: 16.2,
-    moisture: 1.79,
-    conductivity: 16,
-    status: 'danger',
-    lastUpdated: '20:51:12',
+    lastUpdated: 'Bugun, 14:14',
   },
 ];
 
 // ==========================================
-// 2. AI YORDAMCHI (rAls) XULOSALARI
+// 2. AI AGRONOM XULOSALARI
 // ==========================================
 export const aiRecommendations: AIRecommendation[] = [
   {
-    sensorId: 'SMTC-3',
-    issue: "Tuproq sho'rlanishi o'ta yuqori (2991 µS/cm)",
-    recommendation: "Bu hududda bug'doy yoki g'o'za ekish hosildorlikni keskin tushirib yuboradi. Tuproqni yuvish yoki sho'rga chidamli ekinlar ekish zarur.",
-    cropSuggestion: "Beda, Oq jo'xori yoki sho'rga chidamli arpa navlari",
-    action: "Yerni chuchuk suv bilan yuvish",
-  },
-  {
-    sensorId: 'SMTC-4',
-    issue: "Tuproq namligi kritik darajada past (1.79%)",
-    recommendation: "Ekinlarning ildiz tizimi qurib qolish xavfi ostida. Zudlik bilan chuqur sug'orish ishlarini olib borish kerak.",
-    cropSuggestion: "Sug'orishdan so'ng ertapishar sabzavotlar",
-    action: "Zudlik bilan sug'orish",
-  },
+    sensorId: 'SMTC-3 (Sho\'rxok hudud)',
+    issue: "Tuz ionlarining kritik konsentratsiyasi (2991 µS/cm) va Azot (N) tanqisligi",
+    urgency: 'high',
+    diagnosis: "Tuproqda natriy tuzlarining to'planishi va pH (8.2) darajasining yuqoriligi o'simlikning ozuqa moddalarni o'zlashtirishini to'sib qo'ymoqda. Azot miqdori normadan 60% ga past.",
+    cropSuggestion: "Hozirgi sharoitda faqat sho'rga chidamli beda yoki oq jo'xori ekish mumkin.",
+    actionSteps: [
+      "1. Yerni zudlik bilan chuchuk suv yordamida chuqur yuvish (gektariga 3000 m³).",
+      "2. Tuproq ph darajasini tushirish uchun gips (kalsiy sulfat) solish.",
+      "3. Yuvishdan so'ng gektariga 150 kg ammiakli selitra (Azot) o'g'itini kiritish."
+    ],
+    expectedYieldImpact: "Hosildorlikni +40% gacha saqlab qolish imkonini beradi.",
+  }
 ];
 
-
 // ==========================================
-// 3. SAVDO (MARKETPLACE) MA'LUMOTLARI
+// 3. B2B SAVDO (PRO MARKETPLACE)
 // ==========================================
 export const marketListings = [
   {
     id: '1',
-    crop: "Bug'doy (Intensiv nav)",
+    crop: "Bug'doy (Grom navi, 3-sinf)",
+    quality: "Oqsil: 14% | Kleykovina: 26% | Namlik: 12%", // Pro xaridorlar shunga qaraydi
     location: "Samarqand vil., Jomboy tumani",
     status: 'active',
-    quantity: 15,
-    price: 35000000, // 35 mln so'm
-  },
-  {
-    id: '2',
-    crop: "Makkajo'xori",
-    location: "Samarqand vil., Toyloq tumani",
-    status: 'pending',
-    quantity: 8,
-    price: 18000000, // 18 mln so'm
+    quantity: 150, // 150 tonna
+    price: 3200000, // 1 tonnasi 3.2 mln
   }
 ];
 
 export const buyers = [
   {
     id: 'b1',
-    name: "Agro Eksport Tayyorlov",
+    name: "AgroZamin B2B Eksport",
     distance: 12.5,
     phone: "+998 90 123 45 67",
-    rating: 4.8,
-    type: 'collection_point',
-  },
-  {
-    id: 'b2',
-    name: "Hosil Baraka Do'koni",
-    distance: 5.2,
-    phone: "+998 93 987 65 43",
-    rating: 4.5,
-    type: 'store',
-  },
-  {
-    id: 'b3',
-    name: "Toshmatov Vali (Xaridor)",
-    distance: 2.1,
-    phone: "+998 99 111 22 33",
     rating: 4.9,
-    type: 'direct',
+    type: 'collection_point',
+    requirements: "Faqat 1 va 2-sinf, kleykovina >28%",
   }
 ];
