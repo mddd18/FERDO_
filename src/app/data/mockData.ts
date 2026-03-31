@@ -2,12 +2,12 @@ export interface Sensor {
   id: string;
   name: string;
   cropType: string;
-  moisture: number; // %
-  temperature: number; // °C
-  conductivity: number; // µS/cm
-  phLevel: number; // 0-14 (Kislotalilik)
-  npk: { n: number; p: number; k: number }; // mg/kg (Azot, Fosfor, Kaliy)
-  battery: number; // %
+  moisture: number;
+  temperature: number;
+  conductivity: number;
+  phLevel: number;
+  npk: { n: number; p: number; k: number };
+  battery: number;
   status: 'good' | 'warning' | 'danger';
   lastUpdated: string;
 }
@@ -22,9 +22,6 @@ export interface AIRecommendation {
   expectedYieldImpact: string;
 }
 
-// ==========================================
-// 1. PRO DATCHIKLAR VA MAYDON MA'LUMOTLARI
-// ==========================================
 export const sensors: Sensor[] = [
   {
     id: '24e124126f356220',
@@ -33,7 +30,7 @@ export const sensors: Sensor[] = [
     temperature: 16.2,
     moisture: 24.68,
     conductivity: 1057,
-    phLevel: 6.8, // Ideal
+    phLevel: 6.8,
     npk: { n: 45, p: 30, k: 120 },
     battery: 88,
     status: 'good',
@@ -45,24 +42,21 @@ export const sensors: Sensor[] = [
     cropType: "Makkajo'xori",
     temperature: 15.7,
     moisture: 34.37,
-    conductivity: 2991, // Juda yuqori
-    phLevel: 8.2, // Ishqoriy
-    npk: { n: 15, p: 10, k: 40 }, // Ozuqa yetishmaydi
+    conductivity: 2991,
+    phLevel: 8.2,
+    npk: { n: 15, p: 10, k: 40 },
     battery: 42,
     status: 'danger',
     lastUpdated: 'Bugun, 14:14',
   },
 ];
 
-// ==========================================
-// 2. AI AGRONOM XULOSALARI
-// ==========================================
 export const aiRecommendations: AIRecommendation[] = [
   {
     sensorId: 'SMTC-3 (Sho\'rxok hudud)',
     issue: "Tuz ionlarining kritik konsentratsiyasi (2991 µS/cm) va Azot (N) tanqisligi",
     urgency: 'high',
-    diagnosis: "Tuproqda natriy tuzlarining to'planishi va pH (8.2) darajasining yuqoriligi o'simlikning ozuqa moddalarni o'zlashtirishini to'sib qo'ymoqda. Azot miqdori normadan 60% ga past.",
+    diagnosis: "Tuproqda natriy tuzlarining to'planishi va pH (8.2) darajasining yuqoriligi o'simlikning ozuqa moddalarni o'zlashtirishini to'sib qo'ymoqda.",
     cropSuggestion: "Hozirgi sharoitda faqat sho'rga chidamli beda yoki oq jo'xori ekish mumkin.",
     actionSteps: [
       "1. Yerni zudlik bilan chuchuk suv yordamida chuqur yuvish (gektariga 3000 m³).",
@@ -73,18 +67,25 @@ export const aiRecommendations: AIRecommendation[] = [
   }
 ];
 
-// ==========================================
-// 3. B2B SAVDO (PRO MARKETPLACE)
-// ==========================================
+// Savdo bozori ma'lumotlari
 export const marketListings = [
   {
     id: '1',
     crop: "Bug'doy (Grom navi, 3-sinf)",
-    quality: "Oqsil: 14% | Kleykovina: 26% | Namlik: 12%", // Pro xaridorlar shunga qaraydi
+    quality: "Oqsil: 14% | Kleykovina: 26% | Namlik: 12%",
     location: "Samarqand vil., Jomboy tumani",
     status: 'active',
-    quantity: 150, // 150 tonna
-    price: 3200000, // 1 tonnasi 3.2 mln
+    quantity: 150,
+    price: 3200000, 
+  },
+  {
+    id: '2',
+    crop: "Sholi (Nukus-2 navi)", // Nukus qo'shildi
+    quality: "Oliy nav | Namlik: 13.5%",
+    location: "Qoraqalpog'iston Resp., Nukus shahri",
+    status: 'active',
+    quantity: 500, // 500 tonna
+    price: 6500000, // 6.5 mln so'm
   }
 ];
 
@@ -97,5 +98,14 @@ export const buyers = [
     rating: 4.9,
     type: 'collection_point',
     requirements: "Faqat 1 va 2-sinf, kleykovina >28%",
+  },
+  {
+    id: 'b2',
+    name: "Orol Bo'yi Don Mahsulotlari", // Nukus xaridori
+    distance: 450,
+    phone: "+998 93 111 22 33",
+    rating: 4.8,
+    type: 'store',
+    requirements: "Nukus-2, Alanga va Lazer navli sholilar kerak. Eng kam hajm: 50 tonna.",
   }
 ];
