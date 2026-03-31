@@ -1,18 +1,17 @@
 import { NavLink } from 'react-router';
-import { Home, Map, BriefcaseMedical, Headset, LayoutGrid } from 'lucide-react';
+import { Home, Map, ShoppingBag, Headset, LayoutGrid } from 'lucide-react';
 
 export function Navigation() {
   const navItems = [
     { to: '/', icon: Home, label: 'Asosiy' },
     { to: '/maydon', icon: Map, label: 'Maydon' },
-    { to: '/agro-apteka', icon: BriefcaseMedical, label: 'Agro apteka' },
-    { to: '/ai-yordamchi', icon: Headset, label: 'AI yordamchi' }, // Shu yer o'zgardi
+    { to: '/savdo', icon: ShoppingBag, label: 'Savdo' }, // <-- Agro apteka o'rniga Savdo
+    { to: '/ai-yordamchi', icon: Headset, label: 'AI yordamchi' },
     { to: '/boshqa', icon: LayoutGrid, label: 'Boshqa' },
   ];
 
   return (
     <>
-      {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-safe">
         <div className="flex justify-between items-center px-4 py-3">
           {navItems.map((item) => (
