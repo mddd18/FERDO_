@@ -16,7 +16,9 @@ export interface AIRecommendation {
   action: string;
 }
 
-// Rasmdagi haqiqiy datchik ma'lumotlari
+// ==========================================
+// 1. DATCHIKLAR VA MAYDON MA'LUMOTLARI
+// ==========================================
 export const sensors: Sensor[] = [
   {
     id: '24e124126f356220',
@@ -56,7 +58,9 @@ export const sensors: Sensor[] = [
   },
 ];
 
-// Datchiklardan olingan ma'lumotlarga asoslangan AI maslahatlari
+// ==========================================
+// 2. AI YORDAMCHI (rAls) XULOSALARI
+// ==========================================
 export const aiRecommendations: AIRecommendation[] = [
   {
     sensorId: 'SMTC-3',
@@ -72,4 +76,54 @@ export const aiRecommendations: AIRecommendation[] = [
     cropSuggestion: "Sug'orishdan so'ng ertapishar sabzavotlar",
     action: "Zudlik bilan sug'orish",
   },
+];
+
+
+// ==========================================
+// 3. SAVDO (MARKETPLACE) MA'LUMOTLARI
+// ==========================================
+export const marketListings = [
+  {
+    id: '1',
+    crop: "Bug'doy (Intensiv nav)",
+    location: "Samarqand vil., Jomboy tumani",
+    status: 'active',
+    quantity: 15,
+    price: 35000000, // 35 mln so'm
+  },
+  {
+    id: '2',
+    crop: "Makkajo'xori",
+    location: "Samarqand vil., Toyloq tumani",
+    status: 'pending',
+    quantity: 8,
+    price: 18000000, // 18 mln so'm
+  }
+];
+
+export const buyers = [
+  {
+    id: 'b1',
+    name: "Agro Eksport Tayyorlov",
+    distance: 12.5,
+    phone: "+998 90 123 45 67",
+    rating: 4.8,
+    type: 'collection_point',
+  },
+  {
+    id: 'b2',
+    name: "Hosil Baraka Do'koni",
+    distance: 5.2,
+    phone: "+998 93 987 65 43",
+    rating: 4.5,
+    type: 'store',
+  },
+  {
+    id: 'b3',
+    name: "Toshmatov Vali (Xaridor)",
+    distance: 2.1,
+    phone: "+998 99 111 22 33",
+    rating: 4.9,
+    type: 'direct',
+  }
 ];
