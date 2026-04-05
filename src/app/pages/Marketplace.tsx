@@ -1,146 +1,155 @@
 import { useState } from 'react';
 import { Navigation } from '../components/Navigation';
 import { marketListings, buyers } from '../data/mockData';
-import { Plus, Store, MapPin, Phone, ShieldCheck, Scale, Award, Send } from 'lucide-react';
+import { 
+  ShoppingBag, Building2, MapPin, Phone, 
+  Star, TrendingUp, Plus, CheckCircle2, ChevronRight 
+} from 'lucide-react';
 
 export function Marketplace() {
-  const [activeTab, setActiveTab] = useState<'listings' | 'buyers'>('listings');
-  const [showForm, setShowForm] = useState(false); // Forma ochilishi uchun state
-
-  const handleCall = (phone: string) => {
-    alert(`Raqam terilmoqda: ${phone} 📞\n(Bu yerda telefon ilovasi ochiladi)`);
-  };
-
-  const handleOffer = (name: string) => {
-    alert(`"${name}" korxonasiga hosilingiz bo'yicha taklif yuborildi! ✅`);
-  };
-
-  const submitForm = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Yangi e'lon muvaffaqiyatli saqlandi va moderatsiyaga yuborildi! 🎉");
-    setShowForm(false);
-  };
+  const [activeTab, setActiveTab] = useState<'buyers' | 'listings'>('buyers');
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pb-24 flex flex-col">
-      {/* Header */}
-      <div className="bg-white pt-6 pb-2 px-6 rounded-b-3xl shadow-sm border-b border-gray-100 mb-5 z-10 sticky top-0">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Savdo markazi</h1>
-        
-        <div className="flex w-full bg-gray-50 p-1 rounded-xl mb-4">
-          <button onClick={() => setActiveTab('listings')} className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'listings' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            Mening E'lonlarim
+    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans">
+      
+      {/* 1. PREMIUM HEADER */}
+      <div className="bg-white pt-8 pb-6 px-6 shadow-[0_10px_40px_rgba(0,0,0,0.03)] rounded-b-[40px] relative z-20">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Agro Bozor</h1>
+            <p className="text-sm font-medium text-gray-500 mt-1">Vositachilarsiz to'g'ridan-to'g'ri savdo</p>
+          </div>
+          <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-100 shadow-inner text-emerald-600">
+            <ShoppingBag size={26} strokeWidth={1.5} />
+          </div>
+        </div>
+
+        {/* 2. ZAMONAVIY TAB (Segmented Control) */}
+        <div className="bg-gray-100/80 p-1.5 rounded-2xl flex relative">
+          <button 
+            onClick={() => setActiveTab('buyers')}
+            className={`flex-1 py-2.5 text-sm font-extrabold rounded-xl transition-all duration-300 z-10 ${
+              activeTab === 'buyers' ? 'text-gray-900 shadow-sm bg-white' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Faol xaridorlar
           </button>
-          <button onClick={() => setActiveTab('buyers')} className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${activeTab === 'buyers' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            B2B Xaridorlar
+          <button 
+            onClick={() => setActiveTab('listings')}
+            className={`flex-1 py-2.5 text-sm font-extrabold rounded-xl transition-all duration-300 z-10 ${
+              activeTab === 'listings' ? 'text-gray-900 shadow-sm bg-white' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Mening e'lonlarim
           </button>
         </div>
       </div>
-      
-      <main className="px-4 flex-1">
-        {activeTab === 'listings' ? (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
+
+      <main className="px-5 mt-6 space-y-5">
+        
+        {/* =========================================
+            XARIDORLAR (ZAVOD VA EKSPORTYORLAR) QISMI
+            ========================================= */}
+        {activeTab === 'buyers' && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center px-1 mb-2">
+              <h2 className="text-sm font-extrabold text-gray-500 uppercase tracking-wider">Top xaridorlar (Nukus)</h2>
+            </div>
             
-            {/* Yangi E'lon Tugmasi */}
-            {!showForm ? (
-              <button onClick={() => setShowForm(true)} className="w-full bg-[#0B7A3F] active:scale-95 text-white font-medium text-base py-3.5 rounded-2xl transition-all shadow-sm flex items-center justify-center gap-2 mb-6">
-                <Plus size={20} /> Yangi hosilni sotuvga qo'yish
-              </button>
-            ) : (
-              /* Yangi E'lon Formasi */
-              <form onSubmit={submitForm} className="bg-white rounded-3xl shadow-md border border-gray-100 p-5 mb-6 animate-in fade-in zoom-in-95">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-bold text-gray-900">Yangi e'lon</h2>
-                  <button type="button" onClick={() => setShowForm(false)} className="text-gray-400 font-bold bg-gray-50 px-3 py-1 rounded-lg">Bekor qilish</button>
-                </div>
-                <div className="space-y-3 mb-5">
-                  <input required type="text" placeholder="Ekin nomi (Masalan: Lazer Sholi)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-green-500" />
-                  <div className="flex gap-3">
-                    <input required type="number" placeholder="Hajmi (tonna)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-green-500" />
-                    <input required type="number" placeholder="1t narxi (so'm)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-green-500" />
-                  </div>
-                </div>
-                <button type="submit" className="w-full bg-gray-900 active:bg-black text-white font-bold py-3.5 rounded-xl transition-colors">
-                  E'lonni joylash
-                </button>
-              </form>
-            )}
-
-            {marketListings.map((listing) => (
-              <div key={listing.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-5 border-b border-gray-50 flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">{listing.crop}</h3>
-                    <p className="flex items-center gap-1 text-sm font-medium text-gray-500">
-                      <MapPin size={14} className="text-red-500" /> {listing.location}
-                    </p>
-                  </div>
-                  <span className="bg-green-50 text-[#0B7A3F] px-3 py-1 rounded-full text-xs font-bold border border-green-100">Faol</span>
-                </div>
-                
-                <div className="bg-gray-50/50 p-4 border-b border-gray-50">
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <Award size={16} className="text-[#0B7A3F]" />
-                    <span className="text-xs font-bold text-gray-700 uppercase">Sifat ko'rsatkichlari</span>
-                  </div>
-                  <p className="text-sm font-medium text-gray-800 bg-white p-2 rounded-lg border border-gray-100">{listing.quality}</p>
-                </div>
-
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-0.5">Sotiladigan miqdor</p>
-                    <p className="text-base font-bold text-gray-900 flex items-center gap-1.5">
-                      <Scale size={16} className="text-green-600" /> {listing.quantity} tonna
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500 mb-0.5">1 tonna narxi</p>
-                    <p className="text-lg font-bold text-[#0B7A3F]">
-                      {(listing.price / 1000000).toFixed(1)} mln
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
             {buyers.map((buyer) => (
-              <div key={buyer.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-100">
-                    <Store className="text-blue-600" size={24} />
+              <div key={buyer.id} className="bg-white rounded-[28px] p-5 border border-gray-100/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+                
+                {/* Sarlavha qismi */}
+                <div className="flex gap-4 items-start mb-4">
+                  <div className="w-12 h-12 rounded-[18px] bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+                    <Building2 size={24} strokeWidth={1.5} />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-base font-bold text-gray-900">{buyer.name}</h3>
-                      <ShieldCheck size={16} className="text-green-500" />
+                  <div className="flex-1">
+                    <h3 className="text-base font-extrabold text-gray-900 leading-tight">{buyer.name}</h3>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <span className="flex items-center gap-1 text-xs font-bold text-gray-500">
+                        <MapPin size={12} className="text-gray-400" /> {buyer.distance} km
+                      </span>
+                      <span className="flex items-center gap-1 text-xs font-bold text-amber-500">
+                        <Star size={12} fill="currentColor" /> {buyer.rating}
+                      </span>
                     </div>
-                    <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
-                      <MapPin size={12} /> Sizdan {buyer.distance} km uzoqlikda
-                    </p>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-xl p-3 mb-4 border border-gray-100">
-                  <p className="text-xs font-bold text-gray-600 mb-1 uppercase">Xaridor Talablari:</p>
-                  <p className="text-sm font-medium text-gray-800">{buyer.requirements}</p>
+                {/* Talab qismi (Glassmorphism effect) */}
+                <div className="bg-[#F8FAFC] p-3.5 rounded-2xl border border-gray-50 mb-4">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">Sotib oladi:</span>
+                  <p className="text-sm font-semibold text-gray-800 leading-relaxed">
+                    {buyer.requirements}
+                  </p>
                 </div>
-                
-                <div className="flex gap-3">
-                  <button onClick={() => handleCall(buyer.phone)} className="flex-1 bg-white text-gray-900 font-bold py-3 rounded-xl active:bg-gray-50 transition-colors flex items-center justify-center gap-2 border-2 border-gray-100 shadow-sm active:scale-95">
-                    <Phone size={18} className="text-blue-600" /> Qo'ng'iroq
-                  </button>
-                  <button onClick={() => handleOffer(buyer.name)} className="flex-1 bg-[#0B7A3F] text-white font-bold py-3 rounded-xl active:bg-green-800 transition-colors shadow-sm flex items-center justify-center gap-2 active:scale-95">
-                    <Send size={18} /> Taklif berish
-                  </button>
-                </div>
+
+                {/* Harakat tugmasi */}
+                <button className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-500/25 transition-all active:scale-[0.98]">
+                  <Phone size={18} /> Telefon orqali bog'lanish
+                </button>
               </div>
             ))}
           </div>
         )}
-      </main>
 
+
+        {/* =========================================
+            MENING E'LONLARIM (SOTISH) QISMI
+            ========================================= */}
+        {activeTab === 'listings' && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center px-1 mb-2">
+              <h2 className="text-sm font-extrabold text-gray-500 uppercase tracking-wider">Sotuvdagi hosilim</h2>
+            </div>
+
+            {marketListings.map((listing) => (
+              <div key={listing.id} className="bg-white rounded-[28px] p-5 border border-gray-100/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+                
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md flex items-center gap-1">
+                      <CheckCircle2 size={12} /> Faol
+                    </span>
+                  </div>
+                  <button className="text-gray-400 hover:text-gray-900 transition-colors">
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+
+                <h3 className="text-lg font-extrabold text-gray-900 mb-4">{listing.crop}</h3>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-[#F8FAFC] p-3 rounded-2xl border border-gray-50">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Hajmi</span>
+                    <span className="text-base font-black text-gray-900">{listing.quantity} <span className="text-sm text-gray-500 font-bold">tonna</span></span>
+                  </div>
+                  <div className="bg-[#F8FAFC] p-3 rounded-2xl border border-gray-50">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Narxi (1 kg)</span>
+                    <span className="text-base font-black text-green-600">{(listing.price / 1000).toLocaleString()} <span className="text-sm text-gray-500 font-bold">so'm</span></span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                  <TrendingUp size={14} className="text-blue-500" />
+                  {listing.quality}
+                </div>
+              </div>
+            ))}
+
+            {/* Yangi E'lon qo'shish tugmasi */}
+            <button className="w-full mt-4 bg-white border-2 border-dashed border-gray-300 hover:border-green-500 hover:bg-green-50 text-gray-600 hover:text-green-700 font-extrabold py-5 rounded-[28px] flex flex-col items-center justify-center gap-2 transition-all">
+              <div className="bg-gray-100 p-2 rounded-full">
+                <Plus size={24} />
+              </div>
+              Yangi hosilni bozorga chiqarish
+            </button>
+          </div>
+        )}
+
+      </main>
+      
       <Navigation />
     </div>
   );
