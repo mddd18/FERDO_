@@ -1,97 +1,153 @@
 import { Navigation } from '../components/Navigation';
-import { Thermometer, Droplets, Zap, MapPin } from 'lucide-react';
+import { 
+  Thermometer, Droplets, Zap, Wind, CloudRain, 
+  Sun, ChevronRight, AlertCircle, Leaf 
+} from 'lucide-react';
 import { sensors } from '../data/mockData';
-import { LineChart, Line, ResponsiveContainer } from 'recharts'; // Recharts qo'shildi
-
-// Grafik uchun vaqtinchalik jonli ma'lumot (mock)
-const sparklineData = [
-  { val: 20 }, { val: 25 }, { val: 22 }, { val: 30 }, { val: 28 }, { val: 35 }, { val: 32 }
-];
 
 export function Dashboard() {
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pb-24">
-      <div className="bg-white pt-6 pb-4 px-6 rounded-b-3xl shadow-sm mb-6 border-b border-gray-100">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Mening maydonim</h1>
-        <p className="text-sm text-gray-500">Datchiklardan olingan jonli holat dinamikasi</p>
-      </div>
+    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans">
       
-      <main className="px-4 space-y-5">
-        {sensors.map((sensor) => (
-          <div key={sensor.id} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-center mb-5 border-b border-gray-50 pb-4">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">{sensor.name}</h2>
-                <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-1 font-medium">
-                  <div className={`w-2.5 h-2.5 rounded-full shadow-sm ${sensor.status === 'danger' ? 'bg-red-500 shadow-red-500/50 animate-pulse' : sensor.status === 'warning' ? 'bg-yellow-500 shadow-yellow-500/50' : 'bg-green-500 shadow-green-500/50'}`}></div>
-                  ID: {sensor.id}
-                </div>
-              </div>
-              <div className="text-xs text-gray-400 text-right bg-gray-50 px-3 py-1.5 rounded-lg">
-                <p>Yangilandi:</p>
-                <p className="font-bold text-gray-700">{sensor.lastUpdated}</p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {/* Har bir ko'rsatkich yoniga dinamik grafik qo'shildi */}
-              <div className="flex items-center justify-between">
-                <div className="w-1/2">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-                    <Thermometer size={16} className="text-red-500" /> Harorat
-                  </span>
-                  <span className="text-2xl font-black text-gray-900">{sensor.temperature}<span className="text-sm text-gray-400 font-medium"> °C</span></span>
-                </div>
-                <div className="w-1/2 h-10">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={sparklineData}>
-                      <Line type="monotone" dataKey="val" stroke="#ef4444" strokeWidth={3} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="w-1/2">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-                    <Droplets size={16} className="text-blue-500" /> Namlik
-                  </span>
-                  <span className="text-2xl font-black text-gray-900">{sensor.moisture}<span className="text-sm text-gray-400 font-medium"> %</span></span>
-                </div>
-                <div className="w-1/2 h-10">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={sparklineData}>
-                      <Line type="monotone" dataKey="val" stroke="#3b82f6" strokeWidth={3} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between bg-yellow-50/50 p-3 rounded-2xl border border-yellow-100/50">
-                <div className="w-1/2">
-                  <span className="flex items-center gap-1.5 text-xs font-bold text-gray-600 uppercase tracking-wide mb-1">
-                    <Zap size={16} className="text-yellow-600" /> Sho'rlanish
-                  </span>
-                  <span className={`text-2xl font-black ${sensor.conductivity > 1500 ? 'text-red-600' : 'text-gray-900'}`}>{sensor.conductivity}<span className="text-xs text-gray-500 font-medium"> µS/cm</span></span>
-                </div>
-                <div className="w-1/2 h-10">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={sparklineData}>
-                      <Line type="monotone" dataKey="val" stroke={sensor.conductivity > 1500 ? '#dc2626' : '#eab308'} strokeWidth={3} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            <button className="mt-5 w-full bg-gray-50 hover:bg-green-50 text-gray-700 hover:text-[#0B7A3F] flex items-center justify-center gap-2 text-sm font-bold py-3 rounded-xl transition-colors border border-gray-100">
-              <MapPin size={16} /> Xaritada joylashuvni ko'rish
-            </button>
+      {/* 1. AGRO OB-HAVO (Premium Header) */}
+      <div className="bg-white rounded-b-[40px] pt-8 pb-8 px-6 shadow-[0_10px_40px_rgba(0,0,0,0.03)] relative overflow-hidden">
+        <div className="flex justify-between items-center mb-6 relative z-10">
+          <div>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Xush kelibsiz!</h1>
+            <p className="text-sm font-medium text-gray-500 mt-1">Nukus, Qoraqalpog'iston</p>
           </div>
-        ))}
+          <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center border border-green-100">
+            <UserAvatarPlaceholder />
+          </div>
+        </div>
+
+        {/* Ob-havo Kartochkasi */}
+        <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[28px] p-5 text-white shadow-lg shadow-blue-500/30 relative overflow-hidden">
+          {/* Orqa fon bezaklari */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-300 opacity-20 rounded-full blur-2xl"></div>
+          
+          <div className="relative z-10 flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <Sun size={48} className="text-yellow-300 drop-shadow-md" strokeWidth={1.5} />
+              <div>
+                <span className="text-4xl font-black tracking-tighter">28°</span>
+                <p className="text-blue-100 font-medium text-sm mt-1">Ochiq havo, 0% yog'in</p>
+              </div>
+            </div>
+            <div className="space-y-2 text-right">
+              <div className="flex items-center justify-end gap-1.5 text-blue-50 text-sm font-medium">
+                <Wind size={16} /> 12 km/s
+              </div>
+              <div className="flex items-center justify-end gap-1.5 text-blue-50 text-sm font-medium">
+                <CloudRain size={16} /> Namlik: 45%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main className="px-5 mt-6 space-y-6">
+        
+        {/* 2. TEZKOR XABARNOMA (Smart Alert) */}
+        <div className="bg-rose-50 border border-rose-100/60 rounded-2xl p-4 flex items-start gap-3 shadow-sm">
+          <div className="bg-white p-2 rounded-full shadow-sm text-rose-500 shrink-0">
+            <AlertCircle size={20} strokeWidth={2.5} />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-rose-800">Sho'rlanish xavfi (2-Kontur)</h4>
+            <p className="text-xs text-rose-600 mt-1 font-medium leading-relaxed">
+              Tuz darajasi 3450 µS/cm ga yetdi. Paxta hosiliga jiddiy xavf bor. AI tavsiyasini ko'ring.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">Maydonlar holati</h2>
+          <button className="text-green-600 text-sm font-bold flex items-center gap-1 hover:opacity-80 transition-opacity">
+            Barchasi <ChevronRight size={16} />
+          </button>
+        </div>
+
+        {/* 3. DATCHIK KARTOCHKALARI (Clean UI) */}
+        <div className="space-y-4">
+          {sensors.map((sensor) => (
+            <div key={sensor.id} className="bg-white rounded-[28px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/80 transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+              
+              {/* Header qismi */}
+              <div className="flex justify-between items-start mb-5">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className={`w-2.5 h-2.5 rounded-full ${sensor.status === 'danger' ? 'bg-rose-500 animate-pulse shadow-lg shadow-rose-500/50' : sensor.status === 'warning' ? 'bg-amber-400' : 'bg-emerald-500'}`}></span>
+                    <h3 className="text-base font-extrabold text-gray-900">{sensor.name}</h3>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-lg w-fit">
+                    <Leaf size={12} className="text-green-600" />
+                    <span className="text-xs font-bold text-gray-600">{sensor.cropType}</span>
+                  </div>
+                </div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 px-2 py-1 rounded-md">
+                  {sensor.lastUpdated}
+                </div>
+              </div>
+
+              {/* Ko'rsatkichlar Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                {/* Namlik */}
+                <div className="bg-[#F8FAFC] rounded-2xl p-3 border border-gray-50">
+                  <div className="flex items-center gap-1.5 text-blue-500 mb-2">
+                    <Droplets size={16} strokeWidth={2.5} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Namlik</span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-gray-900">{sensor.moisture}</span>
+                    <span className="text-xs font-bold text-gray-400">%</span>
+                  </div>
+                </div>
+
+                {/* Harorat */}
+                <div className="bg-[#F8FAFC] rounded-2xl p-3 border border-gray-50">
+                  <div className="flex items-center gap-1.5 text-orange-500 mb-2">
+                    <Thermometer size={16} strokeWidth={2.5} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Harorat</span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-gray-900">{sensor.temperature}</span>
+                    <span className="text-xs font-bold text-gray-400">°C</span>
+                  </div>
+                </div>
+
+                {/* Sho'rlanish (Eng muhim ko'rsatkich) */}
+                <div className={`rounded-2xl p-3 border ${sensor.conductivity > 1500 ? 'bg-rose-50 border-rose-100' : 'bg-[#F8FAFC] border-gray-50'}`}>
+                  <div className={`flex items-center gap-1.5 mb-2 ${sensor.conductivity > 1500 ? 'text-rose-600' : 'text-amber-500'}`}>
+                    <Zap size={16} strokeWidth={2.5} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Tuz</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-xl font-black ${sensor.conductivity > 1500 ? 'text-rose-700' : 'text-gray-900'}`}>{sensor.conductivity}</span>
+                    </div>
+                    <span className="text-[9px] font-bold text-gray-400 mt-0.5">µS/cm</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          ))}
+        </div>
       </main>
 
       <Navigation />
     </div>
+  );
+}
+
+// Vaqtinchalik Avatar Komponenti
+function UserAvatarPlaceholder() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-700">
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
   );
 }
