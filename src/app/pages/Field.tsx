@@ -1,10 +1,10 @@
 import { Search, Plus, Maximize, Droplets, Wheat, Leaf } from 'lucide-react';
 import { Navigation } from '../components/Navigation';
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Leaflet CSS ulash shart
+import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Leaflet marker ikonkasini to'g'irlash uchun (Vite'da ba'zan yo'qoladi)
+// Leaflet marker ikonkasini to'g'irlash (Vite'da kerak)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -12,18 +12,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Dalalarning kordinatalari (Poligonlar)
+// YAngi koordinatalar (Qoraqalpog'iston, Nukus hududi: 42°42'38.5"N 59°25'16.1"E)
+const MAP_CENTER: [number, number] = [42.710694, 59.421139];
+
+// Dala poligonlari (Markaz atrofida yasalgan konturlar)
 const fieldAPolygon: [number, number][] = [
-  [39.650, 66.970], [39.655, 66.970], [39.655, 66.980], [39.650, 66.980]
+  [42.710, 59.418], [42.714, 59.418], [42.714, 59.423], [42.710, 59.423]
 ];
 const fieldBPolygon: [number, number][] = [
-  [39.645, 66.985], [39.650, 66.985], [39.650, 66.995], [39.645, 66.995]
+  [42.706, 59.424], [42.710, 59.424], [42.710, 59.430], [42.706, 59.430]
 ];
 
 export function Field() {
   const fields = [
-    { id: 1, name: "A-Blok (Shimoliy)", crop: "Intensiv Bug'doy", area: 45.5, status: 'Yaxshi', color: 'bg-green-500', icon: Wheat },
-    { id: 2, name: "B-Blok (Sho'rxok)", crop: "Makkajo'xori", area: 12.0, status: 'Kritik', color: 'bg-red-500', icon: Leaf },
+    { id: 1, name: "A-Blok (Shimoliy)", crop: "Oq jo'xori", area: 45.5, status: 'Yaxshi', color: 'bg-green-500', icon: Wheat },
+    { id: 2, name: "B-Blok (Sho'rxok)", crop: "Beda", area: 12.0, status: 'Kritik', color: 'bg-red-500', icon: Leaf },
   ];
 
   return (
@@ -31,7 +34,7 @@ export function Field() {
       <div className="bg-white pt-6 pb-4 px-6 rounded-b-3xl shadow-sm border-b border-gray-100 flex items-center justify-between mb-4 sticky top-0 z-10">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Maydon xaritasi</h1>
-          <p className="text-sm font-medium text-gray-500">Jami: 78.3 gektar yer</p>
+          <p className="text-sm font-medium text-gray-500">Orolbo'yi hududi: 57.5 ga</p>
         </div>
         <button className="bg-[#0B7A3F] text-white p-2.5 rounded-xl shadow-md active:scale-95 transition-transform">
           <Plus size={24} />
@@ -40,9 +43,9 @@ export function Field() {
 
       <main className="px-4 space-y-6">
         {/* HAQIQIY INTERAKTIV XARITA */}
-        <div className="w-full h-64 rounded-3xl overflow-hidden shadow-md border border-gray-200 z-0">
+        <div className="w-full h-72 rounded-3xl overflow-hidden shadow-md border border-gray-200 z-0 relative">
           <MapContainer 
-            center={[39.650, 66.980]} // Samarqand kordinatasi, xohlaganingizga o'zgartiring
+            center={MAP_CENTER}
             zoom={14} 
             zoomControl={false}
             className="w-full h-full z-0"
@@ -53,17 +56,31 @@ export function Field() {
             />
             {/* A-Blok */}
             <Polygon positions={fieldAPolygon} pathOptions={{ color: '#22c55e', fillColor: '#22c55e', fillOpacity: 0.4 }}>
-              <Popup>A-Blok: Bug'doy (Holati yaxshi)</Popup>
+              <Popup>A-Blok: Oq jo'xori (Holati yaxshi)</Popup>
             </Polygon>
             {/* B-Blok */}
             <Polygon positions={fieldBPolygon} pathOptions={{ color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.4 }}>
               <Popup>B-Blok: Sho'rlangan (Zudlik bilan choralar kerak)</Popup>
             </Polygon>
             {/* Datchik markeri */}
-            <Marker position={[39.647, 66.990]}>
-              <Popup>SMTC-3 Datchigi: Sho'rlanish yuqori!</Popup>
+            <Marker position={[42.708, 59.427]}>
+              <Popup>
+                <div className="text-center">
+                  <span className="font-bold">SMTC-3 Datchigi</span><br/>
+                  <span className="text-red-500 text-xs">Sho'rlanish yuqori!</span>
+                </div>
+              </Popup>
             </Marker>
           </MapContainer>
+          
+          {/* Lokatsiya ko'rsatkichi (floating tag) */}
+          <div className="absolute bottom-3 left-3 z-[400] bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-lg border border-gray-100 flex items-center gap-2">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            </span>
+            <span className="text-xs font-bold text-gray-800">42°42'38.5"N 59°25'16.1"E</span>
+          </div>
         </div>
 
         {/* Tezkor harakatlar */}
