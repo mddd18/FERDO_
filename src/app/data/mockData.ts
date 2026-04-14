@@ -22,7 +22,7 @@ export interface AIRecommendation {
   expectedYieldImpact: string;
 }
 
-// 4 TA DATCHIK MA'LUMOTLARI (Rasmdagi aniq raqamlar bilan)
+// 4 TA DATCHIK MA'LUMOTLARI
 export const sensors: Sensor[] = [
   {
     id: '24e124126f356220',
