@@ -18,10 +18,12 @@ export function Profile() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans">
+    // MUHIM O'ZGARISH: overflow-x-hidden qo'shildi
+    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans overflow-x-hidden">
       
       {/* 1. PREMIUM HEADER VA AVATAR */}
-      <div className="bg-gradient-to-br from-emerald-600 via-[#0B7A3F] to-green-900 pt-10 pb-24 px-6 rounded-b-[40px] shadow-lg relative">
+      {/* MUHIM O'ZGARISH: overflow-hidden qo'shildi */}
+      <div className="bg-gradient-to-br from-emerald-600 via-[#0B7A3F] to-green-900 pt-10 pb-24 px-6 rounded-b-[40px] shadow-lg relative overflow-hidden">
         {/* Dekorativ orqa fon nurlari */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl -mr-10 -mt-10"></div>
         <div className="absolute bottom-10 left-0 w-32 h-32 bg-emerald-400 opacity-20 rounded-full blur-2xl"></div>
