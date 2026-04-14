@@ -13,13 +13,8 @@ export function AIRecommendations() {
     setIsLoading(true);
     
     try {
-      // 1. API kalitni tekshiramiz
-      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!API_KEY) {
-        setAiResponse("API kaliti kiritilmagan! Iltimos, VITE_GEMINI_API_KEY ni sozlang.");
-        setIsLoading(false);
-        return;
-      }
+      // 1. API kalit to'g'ridan-to'g'ri kiritildi
+      const API_KEY = "AIzaSyD179160qwFGYHOTADERw9gP02MqjmFTBk";
 
       // 2. Gemini AI ni ishga tushiramiz
       const genAI = new GoogleGenerativeAI(API_KEY);
@@ -51,7 +46,7 @@ export function AIRecommendations() {
 
     } catch (error) {
       console.error("AI bilan ishlashda xato:", error);
-      setAiResponse("AI serverlari bilan bog'lanishda xatolik yuz berdi.");
+      setAiResponse("AI serverlari bilan bog'lanishda xatolik yuz berdi. Iltimos, internetingizni tekshiring.");
     } finally {
       setIsLoading(false);
     }
