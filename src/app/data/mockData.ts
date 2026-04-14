@@ -22,39 +22,66 @@ export interface AIRecommendation {
   expectedYieldImpact: string;
 }
 
+// 4 TA DATCHIK MA'LUMOTLARI (Rasmdagi aniq raqamlar bilan)
 export const sensors: Sensor[] = [
   {
     id: '24e124126f356220',
-    name: 'SMTC-1 (Shimoliy blok)',
+    name: 'SMTC-1',
     cropType: "Intensiv Bug'doy",
-    temperature: 16.2,
-    moisture: 24.68,
-    conductivity: 1057,
+    temperature: 17.7,
+    moisture: 19.95,
+    conductivity: 1120,
     phLevel: 6.8,
     npk: { n: 45, p: 30, k: 120 },
     battery: 88,
     status: 'good',
-    lastUpdated: 'Bugun, 14:15',
+    lastUpdated: 'Bugun, 10:41',
+  },
+  {
+    id: '24e124126f356667',
+    name: 'SMTC-2',
+    cropType: "Paxta",
+    temperature: 17.5,
+    moisture: 16.94,
+    conductivity: 2556,
+    phLevel: 7.1,
+    npk: { n: 30, p: 25, k: 90 },
+    battery: 75,
+    status: 'warning',
+    lastUpdated: 'Bugun, 10:40',
   },
   {
     id: '24e124126f350492',
-    name: 'SMTC-3 (Sho\'rxok hudud)',
+    name: 'SMTC-3',
     cropType: "Makkajo'xori",
-    temperature: 15.7,
-    moisture: 34.37,
-    conductivity: 2991,
+    temperature: 16.6,
+    moisture: 38.28,
+    conductivity: 7059,
     phLevel: 8.2,
     npk: { n: 15, p: 10, k: 40 },
     battery: 42,
     status: 'danger',
-    lastUpdated: 'Bugun, 14:14',
+    lastUpdated: 'Bugun, 10:41',
   },
+  {
+    id: '24e124126f350564',
+    name: 'SMTC-4',
+    cropType: "Beda",
+    temperature: 16.6,
+    moisture: 21.62,
+    conductivity: 1025,
+    phLevel: 6.5,
+    npk: { n: 55, p: 35, k: 110 },
+    battery: 92,
+    status: 'good',
+    lastUpdated: 'Bugun, 10:41',
+  }
 ];
 
 export const aiRecommendations: AIRecommendation[] = [
   {
-    sensorId: 'SMTC-3 (Sho\'rxok hudud)',
-    issue: "Tuz ionlarining kritik konsentratsiyasi (2991 µS/cm) va Azot (N) tanqisligi",
+    sensorId: 'SMTC-3',
+    issue: "Tuz ionlarining kritik konsentratsiyasi (7059 µS/cm)",
     urgency: 'high',
     diagnosis: "Tuproqda natriy tuzlarining to'planishi va pH (8.2) darajasining yuqoriligi o'simlikning ozuqa moddalarni o'zlashtirishini to'sib qo'ymoqda.",
     cropSuggestion: "Hozirgi sharoitda faqat sho'rga chidamli beda yoki oq jo'xori ekish mumkin.",
@@ -80,12 +107,12 @@ export const marketListings = [
   },
   {
     id: '2',
-    crop: "Sholi (Nukus-2 navi)", // Nukus qo'shildi
+    crop: "Sholi (Nukus-2 navi)", 
     quality: "Oliy nav | Namlik: 13.5%",
     location: "Qoraqalpog'iston Resp., Nukus shahri",
     status: 'active',
-    quantity: 500, // 500 tonna
-    price: 6500000, // 6.5 mln so'm
+    quantity: 500,
+    price: 6500000, 
   }
 ];
 
@@ -101,7 +128,7 @@ export const buyers = [
   },
   {
     id: 'b2',
-    name: "Orol Bo'yi Don Mahsulotlari", // Nukus xaridori
+    name: "Orol Bo'yi Don Mahsulotlari", 
     distance: 450,
     phone: "+998 93 111 22 33",
     rating: 4.8,
