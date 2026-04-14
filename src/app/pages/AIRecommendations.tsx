@@ -2,54 +2,63 @@ import { useState } from 'react';
 import { Navigation } from '../components/Navigation';
 import { Bot, Sparkles, Loader2, Target } from 'lucide-react';
 import { sensors } from '../data/mockData';
-// Gemini AI to'g'ridan-to'g'ri shu yerga chaqiriladi
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export function AIRecommendations() {
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAskAI = async () => {
+  // LOKAL AI MANTIQ (Internet kerak emas)
+  const generateLocalAIResponse = () => {
+    const badSensors = sensors.filter(s => s.status === 'danger' || s.status === 'warning');
+    
+    let response = "📝 **Umumiy xulosa**\n";
+    if (badSensors.length > 0) {
+        response += `Fermaning umumiy holati qoniqarli, ammo ${badSensors.length} ta maydonda muammolar aniqlandi. Hosilni saqlab qolish uchun zudlik bilan choralar ko'rish talab etiladi.\n\n`;
+    } else {
+        response += `Fermaning umumiy holati a'lo darajada. Barcha ko'rsatkichlar me'yorda.\n\n`;
+    }
+
+    response += "📊 **Har bir maydon bo'yicha tahlil**\n";
+    sensors.forEach(s => {
+        response += `- **${s.name} (${s.cropType})**: `;
+        if (s.status === 'good') {
+            response += `Holat barqaror. Namlik va EC (${s.conductivity} µS/cm) me'yorda. Ishni shunday davom ettiring.\n`;
+        } else {
+            response += `Diqqat! EC (${s.conductivity} µS/cm) va pH (${s.phLevel}) darajasi ruxsat etilgan me'yordan ancha yuqori.\n`;
+        }
+    });
+
+    if (badSensors.length > 0) {
+        response += "\n🚨 **Zudlik bilan ko'rilishi kerak bo'lgan choralar**\n";
+        badSensors.forEach(s => {
+            if (s.status === 'danger' || s.status === 'warning') {
+                response += `**${s.name} uchun:**\n`;
+                if (s.conductivity > 2000) {
+                    response += `1. Yerni zudlik bilan chuchuk suv yordamida chuqur yuvish (gektariga 3000 m³).\n`;
+                }
+                if (s.phLevel >= 8.0) {
+                    response += `2. Tuproq pH darajasini tushirish uchun gips (kalsiy sulfat) solish.\n`;
+                }
+                if (s.npk.n <= 30) {
+                    response += `3. Yuvishdan so'ng darhol gektariga 150 kg ammiakli selitra (Azot) kiritish.\n`;
+                }
+                response += '\n';
+            }
+        });
+    }
+
+    return response;
+  };
+
+  const handleAskAI = () => {
     setIsLoading(true);
     
-    try {
-      // 1. API kalit to'g'ridan-to'g'ri kiritildi
-      const API_KEY = "AIzaSyD179160qwFGYHOTADERw9gP02MqjmFTBk";
-
-      // 2. Gemini AI ni ishga tushiramiz
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash",
-        systemInstruction: `Sen 'FERDO' Agri 4.0 startapining Bosh AI Agronomisan. Sening vazifang - fermerning barcha 4 ta maydonidagi datchik ma'lumotlarini birdaniga tahlil qilib, umumiy va aniq hisobot berish.
-        Qoidalarga qat'iy rioya qil:
-        1. Har bir maydon (kontur) uchun qisqacha holatini aytib o't (Namlik, Harorat, EC, pH qanaqa).
-        2. Yaxshi holatdagi maydonlarni (SMTC-1, SMTC-4) ham maqtab, ishni shunday davom ettirishni ayt.
-        3. Agar EC (sho'rlanish) 2000 dan yuqori va pH 8.0 atrofida bo'lsa (Masalan SMTC-3 va SMTC-2 da), zudlik bilan yerni yuvish va gips solishni buyur. NPK dagi Azot (N) past bo'lsa, o'g'it berishni ayt.
-        
-        Javob tuzilishi:
-        - 📝 Umumiy xulosa (Fermaning joriy holati).
-        - 📊 Har bir maydon bo'yicha tahlil.
-        - 🚨 Zudlik bilan ko'rilishi kerak bo'lgan choralar (faqat muammoli hududlar uchun).
-        Javobni o'zbek tilida, professional lekin tushunarli qilib yoz.`
-      });
-
-      // 3. Datchik ma'lumotlarini AI ga matn ko'rinishida tayyorlaymiz
-      const sensorsText = sensors.map(s => 
-        `- ${s.name} (${s.cropType}): Holati - ${s.status}, Harorat: ${s.temperature}°C, Namlik: ${s.moisture}%, EC (Tuz): ${s.conductivity} µS/cm, pH: ${s.phLevel}, NPK (N:${s.npk.n}, P:${s.npk.p}, K:${s.npk.k})`
-      ).join('\n');
-
-      const prompt = `Fermerdan quyidagi 4 ta maydon bo'yicha bugungi datchik ma'lumotlari keldi:\n\n${sensorsText}\n\nIltimos, ushbu 4 ta maydonni to'liq tahlil qilib, kompleks AI diagnozni yozib ber.`;
-
-      // 4. Javobni olamiz
-      const result = await model.generateContent(prompt);
-      setAiResponse(result.response.text());
-
-    } catch (error) {
-      console.error("AI bilan ishlashda xato:", error);
-      setAiResponse("AI serverlari bilan bog'lanishda xatolik yuz berdi. Iltimos, internetingizni tekshiring.");
-    } finally {
+    // Sun'iy intellekt "o'ylayotganini" imitatsiya qilish uchun 1.5 soniya kutamiz
+    setTimeout(() => {
+      const result = generateLocalAIResponse();
+      setAiResponse(result);
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   return (
@@ -66,7 +75,7 @@ export function AIRecommendations() {
           </div>
           <div>
             <h1 className="text-2xl font-black text-white tracking-tight">AI Agronom</h1>
-            <p className="text-blue-100 font-medium text-sm mt-1">Kompleks dala tahlili</p>
+            <p className="text-blue-100 font-medium text-sm mt-1">Kompleks dala tahlili (Oflayn)</p>
           </div>
         </div>
       </div>
