@@ -7,7 +7,7 @@ import {
   Map as MapIcon, ChevronRight, AlertTriangle
 } from 'lucide-react';
 
-// Leaflet marker ikonkasini to'g'irlash (Vite'da kerak)
+// Leaflet marker ikonkasini to'g'irlash
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -15,7 +15,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Qoraqalpog'iston koordinatalari (Nukus)
+// Xarita markazi
 const MAP_CENTER: [number, number] = [42.710694, 59.421139];
 
 const fieldAPolygon: [number, number][] = [
@@ -57,8 +57,9 @@ export function Field() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Maydon xaritasi</h1>
+            {/* O'ZGARISH: "Orolbo'yi" o'rniga "Sizning yeringiz" yozildi */}
             <div className="flex items-center gap-1.5 mt-2 text-sm font-bold text-emerald-700 bg-emerald-50 w-fit px-3 py-1.5 rounded-xl border border-emerald-100">
-              <Navigation2 size={16} /> 57.5 gektar (Orolbo'yi)
+              <Navigation2 size={16} /> 57.5 gektar (Sizning yeringiz)
             </div>
           </div>
           <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center border border-gray-100 shadow-inner text-gray-400">
@@ -133,7 +134,7 @@ export function Field() {
           </button>
         </div>
 
-        {/* 4. MAYDONLAR TAFSILOTI (Clean UI Cards) */}
+        {/* 4. MAYDONLAR TAFSILOTI */}
         <div>
           <div className="flex items-center justify-between px-1 mb-4 mt-2">
             <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">Maydonlar tafsiloti</h2>
