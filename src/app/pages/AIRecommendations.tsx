@@ -19,7 +19,7 @@ export function AIRecommendations() {
       // 2. Gemini AI ni ishga tushiramiz
       const genAI = new GoogleGenerativeAI(API_KEY);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: `Sen 'FERDO' Agri 4.0 startapining Bosh AI Agronomisan. Sening vazifang - fermerning barcha 4 ta maydonidagi datchik ma'lumotlarini birdaniga tahlil qilib, umumiy va aniq hisobot berish.
         Qoidalarga qat'iy rioya qil:
         1. Har bir maydon (kontur) uchun qisqacha holatini aytib o't (Namlik, Harorat, EC, pH qanaqa).
