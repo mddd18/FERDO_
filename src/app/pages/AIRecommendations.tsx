@@ -1,135 +1,138 @@
+import { useState } from 'react';
 import { Navigation } from '../components/Navigation';
-import { 
-  Sparkles, AlertTriangle, Activity, TrendingUp, 
-  CheckCircle2, BrainCircuit, Droplets, MessageSquare, ChevronRight
-} from 'lucide-react';
-import { aiRecommendations } from '../data/mockData';
+import { Bot, Sparkles, Loader2, Target } from 'lucide-react';
+import { sensors } from '../data/mockData';
+// Gemini AI to'g'ridan-to'g'ri shu yerga chaqiriladi
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export function AIRecommendations() {
-  return (
-    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans">
-      
-      {/* 1. AI PREMIUM HEADER (Neyrotarmoq uslubi) */}
-      <div className="bg-gradient-to-br from-gray-900 via-emerald-950 to-green-900 pt-10 pb-8 px-6 shadow-2xl rounded-b-[40px] relative overflow-hidden">
-        
-        {/* Glowing / Pulse effektlari (AI ishlayotganini bildiradi) */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 opacity-20 rounded-full blur-3xl -mr-20 -mt-20 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-green-400 opacity-10 rounded-full blur-2xl -ml-10 -mb-10"></div>
-        
-        <div className="relative z-10 flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-emerald-500/20 p-2.5 rounded-2xl border border-emerald-500/30 backdrop-blur-sm">
-              <BrainCircuit size={28} className="text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">AI Agronom</h1>
-              <p className="text-emerald-200/80 text-sm font-medium mt-0.5 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Tizim faol
-              </p>
-            </div>
-          </div>
-        </div>
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-        {/* AI qisqacha xulosasi */}
-        <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 mt-4 text-emerald-50">
-          <p className="text-sm font-medium leading-relaxed">
-            "Oxirgi 24 soat ichida dalangizdagi 3 ta datchik ma'lumotlari tahlil qilindi. 1 ta kritik muammo aniqlandi."
-          </p>
+  const handleAskAI = async () => {
+    setIsLoading(true);
+    
+    try {
+      // 1. API kalitni tekshiramiz
+      const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!API_KEY) {
+        setAiResponse("API kaliti kiritilmagan! Iltimos, VITE_GEMINI_API_KEY ni sozlang.");
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. Gemini AI ni ishga tushiramiz
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: `Sen 'FERDO' Agri 4.0 startapining Bosh AI Agronomisan. Sening vazifang - fermerning barcha 4 ta maydonidagi datchik ma'lumotlarini birdaniga tahlil qilib, umumiy va aniq hisobot berish.
+        Qoidalarga qat'iy rioya qil:
+        1. Har bir maydon (kontur) uchun qisqacha holatini aytib o't (Namlik, Harorat, EC, pH qanaqa).
+        2. Yaxshi holatdagi maydonlarni (SMTC-1, SMTC-4) ham maqtab, ishni shunday davom ettirishni ayt.
+        3. Agar EC (sho'rlanish) 2000 dan yuqori va pH 8.0 atrofida bo'lsa (Masalan SMTC-3 va SMTC-2 da), zudlik bilan yerni yuvish va gips solishni buyur. NPK dagi Azot (N) past bo'lsa, o'g'it berishni ayt.
+        
+        Javob tuzilishi:
+        - 📝 Umumiy xulosa (Fermaning joriy holati).
+        - 📊 Har bir maydon bo'yicha tahlil.
+        - 🚨 Zudlik bilan ko'rilishi kerak bo'lgan choralar (faqat muammoli hududlar uchun).
+        Javobni o'zbek tilida, professional lekin tushunarli qilib yoz.`
+      });
+
+      // 3. Datchik ma'lumotlarini AI ga matn ko'rinishida tayyorlaymiz
+      const sensorsText = sensors.map(s => 
+        `- ${s.name} (${s.cropType}): Holati - ${s.status}, Harorat: ${s.temperature}°C, Namlik: ${s.moisture}%, EC (Tuz): ${s.conductivity} µS/cm, pH: ${s.phLevel}, NPK (N:${s.npk.n}, P:${s.npk.p}, K:${s.npk.k})`
+      ).join('\n');
+
+      const prompt = `Fermerdan quyidagi 4 ta maydon bo'yicha bugungi datchik ma'lumotlari keldi:\n\n${sensorsText}\n\nIltimos, ushbu 4 ta maydonni to'liq tahlil qilib, kompleks AI diagnozni yozib ber.`;
+
+      // 4. Javobni olamiz
+      const result = await model.generateContent(prompt);
+      setAiResponse(result.response.text());
+
+    } catch (error) {
+      console.error("AI bilan ishlashda xato:", error);
+      setAiResponse("AI serverlari bilan bog'lanishda xatolik yuz berdi.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F4F7F6] pb-28 font-sans overflow-x-hidden">
+      
+      {/* HEADER */}
+      <div className="bg-gradient-to-br from-indigo-600 to-blue-700 pt-10 pb-8 px-6 rounded-b-[40px] shadow-lg relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-400 opacity-20 rounded-full blur-2xl"></div>
+        
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-14 h-14 bg-white/20 rounded-2xl backdrop-blur-sm flex items-center justify-center border border-white/30">
+            <Bot size={32} className="text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-white tracking-tight">AI Agronom</h1>
+            <p className="text-blue-100 font-medium text-sm mt-1">Kompleks dala tahlili</p>
+          </div>
         </div>
       </div>
 
       <main className="px-5 mt-6 space-y-6">
         
-        <div className="flex justify-between items-center px-1">
-          <h2 className="text-sm font-extrabold text-gray-500 uppercase tracking-wider">Tezkor diagnozlar</h2>
+        {/* BARCHA MAYDONLAR TAHILILI KARTOCHKASI */}
+        <div className="bg-white rounded-[28px] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-indigo-50 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -z-0"></div>
+          
+          <div className="flex items-center gap-3 mb-4 relative z-10">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+              <Target size={20} className="text-indigo-600" />
+            </div>
+            <div>
+              <h3 className="text-sm font-extrabold text-gray-900">Umumiy Tahlil</h3>
+              <p className="text-xs font-bold text-gray-500">Jami 4 ta hudud datchiklari tekshiruvda</p>
+            </div>
+          </div>
+
+          {/* Dinamik Datchiklar Grid (4 ta maydon qisqacha ko'rinishi) */}
+          <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
+            {sensors.map((sensor) => (
+              <div key={sensor.id} className={`p-3 rounded-2xl border ${sensor.status === 'danger' ? 'bg-rose-50 border-rose-100' : sensor.status === 'warning' ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
+                 <h4 className="text-[11px] font-extrabold text-gray-800">{sensor.name}</h4>
+                 <p className="text-[9px] font-bold text-gray-500 mb-1">{sensor.cropType}</p>
+                 <div className={`text-[10px] font-bold ${sensor.status === 'danger' ? 'text-rose-600' : sensor.status === 'warning' ? 'text-amber-600' : 'text-emerald-600'}`}>
+                   EC: {sensor.conductivity} | pH: {sensor.phLevel}
+                 </div>
+              </div>
+            ))}
+          </div>
+
+          <button 
+            onClick={handleAskAI}
+            disabled={isLoading}
+            className="w-full relative z-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-2xl font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all active:scale-[0.98] disabled:opacity-70"
+          >
+            {isLoading ? (
+              <><Loader2 size={20} className="animate-spin" /> Barcha maydonlar tahlil qilinmoqda...</>
+            ) : (
+              <><Sparkles size={20} /> AI Kompleks Tahlilni Boshlash</>
+            )}
+          </button>
         </div>
 
-        {/* 2. DIAGNOSTIK KARTOCHKALAR (Premium Report) */}
-        {aiRecommendations.map((rec, index) => (
-          <div key={index} className="relative rounded-[32px] bg-white p-5 shadow-[0_10px_40px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden group">
+        {/* AI JAVOBI */}
+        {aiResponse && (
+          <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-indigo-50 relative">
+            <div className="flex items-center gap-3 mb-4 border-b border-gray-50 pb-4">
+              <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center">
+                <Bot size={20} className="text-indigo-600" />
+              </div>
+              <h3 className="text-base font-extrabold text-gray-900">FERDO AI Umumiy Xulosasi</h3>
+            </div>
             
-            {/* Xavf darajasiga qarab yon tomondagi rangli chiziq */}
-            <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${rec.urgency === 'high' ? 'bg-rose-500' : 'bg-amber-500'}`}></div>
-
-            {/* Sarlavha: Muammo */}
-            <div className="flex items-start gap-3 mb-5 pl-2">
-              <div className={`p-3 rounded-2xl shrink-0 shadow-lg ${rec.urgency === 'high' ? 'bg-rose-50 text-rose-600 shadow-rose-500/20 border border-rose-100' : 'bg-amber-50 text-amber-600 shadow-amber-500/20 border border-amber-100'}`}>
-                <AlertTriangle size={24} strokeWidth={2} />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block">
-                  {rec.sensorId}
-                </span>
-                <h3 className="text-base font-extrabold text-gray-900 leading-tight">
-                  {rec.issue}
-                </h3>
-              </div>
-            </div>
-
-            {/* AI Xulosasi (Glass effect ichida) */}
-            <div className="bg-[#F8FAFC] rounded-[24px] p-4 border border-gray-100/50 mb-5 pl-2">
-              <div className="flex items-center gap-2 mb-2">
-                <Activity size={16} className="text-emerald-600" />
-                <h4 className="font-bold text-sm text-gray-800">Tahlil xulosasi</h4>
-              </div>
-              <p className="text-sm text-gray-600 font-medium leading-relaxed">
-                {rec.diagnosis}
-              </p>
-              
-              {/* Tavsiya qilingan ekin */}
-              <div className="mt-4 bg-emerald-50 border border-emerald-100 p-3 rounded-xl flex items-start gap-3">
-                <Sparkles size={18} className="text-emerald-600 shrink-0 mt-0.5" />
-                <p className="text-sm font-bold text-emerald-800">
-                  {rec.cropSuggestion}
-                </p>
-              </div>
-            </div>
-
-            {/* Qadam-ba-qadam choralar */}
-            <div className="mb-5 pl-2">
-              <div className="flex items-center gap-2 mb-3">
-                <Droplets size={16} className="text-blue-500" />
-                <h4 className="font-bold text-sm text-gray-800">Qilinishi kerak bo'lgan ishlar:</h4>
-              </div>
-              <div className="space-y-2.5">
-                {rec.actionSteps.map((step, idx) => (
-                  <div key={idx} className="flex items-start gap-3 bg-white p-2 rounded-xl">
-                    <div className="mt-0.5 bg-green-100 rounded-full p-0.5">
-                      <CheckCircle2 size={16} className="text-green-600" />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-700">{step}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Kutilayotgan Natija (Highlight) */}
-            <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-[20px] p-4 flex items-center gap-4 text-white shadow-lg shadow-green-500/20">
-              <div className="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm">
-                <TrendingUp size={22} />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-emerald-100 uppercase tracking-widest mb-0.5">Natija</p>
-                <p className="text-sm font-black tracking-wide">{rec.expectedYieldImpact}</p>
-              </div>
-            </div>
-
-          </div>
-        ))}
-
-        {/* 3. AI BILAN CHAT (Yangi UX ishora) */}
-        <button className="w-full mt-2 bg-white border border-gray-200 hover:border-emerald-500 p-4 rounded-[28px] shadow-sm flex items-center justify-between group transition-all active:scale-[0.98]">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-50 group-hover:bg-emerald-50 rounded-2xl flex items-center justify-center transition-colors">
-              <MessageSquare size={22} className="text-gray-400 group-hover:text-emerald-600" />
-            </div>
-            <div className="text-left">
-              <h4 className="text-sm font-extrabold text-gray-900">AI ga savol berish</h4>
-              <p className="text-xs font-medium text-gray-500 mt-0.5">Ovozli yoki matnli xabar</p>
+            <div className="prose prose-sm prose-indigo max-w-none font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
+              {aiResponse}
             </div>
           </div>
-          <ChevronRight size={20} className="text-gray-300 group-hover:text-emerald-500 transition-colors" />
-        </button>
+        )}
 
       </main>
 
