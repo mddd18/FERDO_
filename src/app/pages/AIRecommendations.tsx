@@ -11,10 +11,10 @@ export function AIRecommendations() {
   const generateLocalAIResponse = () => {
     // Joriy sanani chiroyli formatda olish
     const date = new Date();
-    const formattedDate = \`\${date.getDate()}.\${date.getMonth() + 1}.\${date.getFullYear()} \${date.getHours()}:\${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}\`;
+    const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()} ${date.getHours()}:${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}`;
 
-    return \`**FERDO INTELLIGENCE: DALA AUDITI VA AGRO-TAVSIYA**
-⏱ Tahlil vaqti: \${formattedDate}
+    return `**FERDO INTELLIGENCE: DALA AUDITI VA AGRO-TAVSIYA**
+⏱ Tahlil vaqti: ${formattedDate}
 📍 Obyekt: 4 ta hudud datchiklari tizimi
 🛡 Status kodi: #ERR-7059 (Kritik sho'rlanish)
 
@@ -46,7 +46,7 @@ Hosilni saqlab qolish va tuproqni reabilitatsiya qilish uchun quyidagi 3 bosqich
 * **Norma:** Gektariga 150 kg ammiakli selitra kiritish.
 * **Maqsad:** Stressga tushgan makkajo'xori va paxta nihollarining yashil massasini tezkor tiklash (Reanimatsiya).
 
-*FERDO AI tizimi ushbu jarayonlarni 24/7 monitoring qilib boradi. Navbatdagi analiz yuvish jarayoni tugagach (tuproq namligi barqarorlashganda) taqdim etiladi.*\`;
+*FERDO AI tizimi ushbu jarayonlarni 24/7 monitoring qilib boradi. Navbatdagi analiz yuvish jarayoni tugagach (tuproq namligi barqarorlashganda) taqdim etiladi.*`;
   };
 
   const handleAskAI = () => {
@@ -97,13 +97,13 @@ Hosilni saqlab qolish va tuproqni reabilitatsiya qilish uchun quyidagi 3 bosqich
           {/* Dinamik Datchiklar Grid */}
           <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
             {sensors.map((sensor) => (
-              <div key={sensor.id} className={\`p-3 rounded-2xl border \${sensor.status === 'danger' ? 'bg-rose-50 border-rose-100' : sensor.status === 'warning' ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}\`}>
+              <div key={sensor.id} className={`p-3 rounded-2xl border ${sensor.status === 'danger' ? 'bg-rose-50 border-rose-100' : sensor.status === 'warning' ? 'bg-amber-50 border-amber-100' : 'bg-emerald-50 border-emerald-100'}`}>
                  <div className="flex items-center justify-between mb-1">
                    <h4 className="text-[11px] font-extrabold text-gray-800">{sensor.name}</h4>
                    {sensor.status === 'good' && <CheckCircle2 size={12} className="text-emerald-500" />}
                  </div>
                  <p className="text-[9px] font-bold text-gray-500 mb-1">{sensor.cropType}</p>
-                 <div className={\`text-[10px] font-bold \${sensor.status === 'danger' ? 'text-rose-600' : sensor.status === 'warning' ? 'text-amber-600' : 'text-emerald-600'}\`}>
+                 <div className={`text-[10px] font-bold ${sensor.status === 'danger' ? 'text-rose-600' : sensor.status === 'warning' ? 'text-amber-600' : 'text-emerald-600'}`}>
                    EC: {sensor.conductivity} | pH: {sensor.phLevel}
                  </div>
               </div>
